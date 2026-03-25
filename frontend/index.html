@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwipeMatch - Influencer Marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --background: #F7F7F7;
+            --dark: #2C3E50;
+            --success: #27AE60;
+            --error: #E74C3C;
+            --white: #FFFFFF;
+            --gray: #95A5A6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Header */
+        .header {
+            background: var(--white);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .logo span {
+            color: var(--dark);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 50px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: #ff5252;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: #3dbdb5;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Auth Forms */
+        .auth-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .auth-container.active {
+            display: flex;
+        }
+
+        .auth-box {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .auth-box h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .auth-tab.active {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .dashboard.active {
+            display: block;
+        }
+
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* Swipe Cards */
+        .swipe-container {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            min-height: 60vh;
+            flex-direction: column;
+        }
+
+        .swipe-container.active {
+            display: flex;
+        }
+
+        .swipe-card {
+            width: 350px;
+            height: 500px;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            overflow: hidden;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .swipe-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card-header {
+            height: 200px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--white);
+        }
+
+        .brand-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .card-body h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-body .brand-name {
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .card-body .description {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .coupon-info {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .coupon-info .code {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 2px;
+        }
+
+        .swipe-actions {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .swipe-btn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .swipe-left {
+            background: var(--error);
+            color: var(--white);
+        }
+
+        .swipe-left:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .swipe-right {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .swipe-right:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(39, 174, 96, 0.4);
+        }
+
+        /* Matches */
+        .matches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .match-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .match-card h4 {
+            margin-bottom: 0.5rem;
+        }
+
+        .match-card .coupon-code {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0.5rem 0;
+        }
+
+        .match-card .promote-link {
+            background: #f8f9fa;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        /* Verification */
+        .verification-section {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .verification-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #f39c12;
+            color: var(--white);
+        }
+
+        .status-verified {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .status-rejected {
+            background: var(--error);
+            color: var(--white);
+        }
+
+        .platform-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Brand Dashboard */
+        .campaign-form {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .coupon-input {
+            width: 100%;
+            min-height: 150px;
+            padding: 1rem;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-family: monospace;
+            resize: vertical;
+        }
+
+        .campaign-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .campaign-item {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .campaign-stats {
+            display: flex;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .campaign-stat {
+            text-align: center;
+        }
+
+        .campaign-stat .num {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .campaign-stat .label {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        /* Animations */
+        @keyframes swipeRight {
+            0% { transform: translateX(0) rotate(0); opacity: 1; }
+            100% { transform: translateX(100px) rotate(10deg); opacity: 0; }
+        }
+
+        @keyframes swipeLeft {
+            0% { transform: translateX(0) rotate(0); opacity: 1; }
+            100% { transform: translateX(-100px) rotate(-10deg); opacity: 0; }
+        }
+
+        .swiping-right {
+            animation: swipeRight 0.5s ease forwards;
+        }
+
+        .swiping-left {
+            animation: swipeLeft 0.5s ease forwards;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: var(--white);
+            font-weight: 600;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            background: var(--success);
+        }
+
+        .toast-error {
+            background: var(--error);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .swipe-card {
+                width: 100%;
+                max-width: 350px;
+            }
+
+            .swipe-actions {
+                gap: 1.5rem;
+            }
+
+            .swipe-btn {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">Swipe<span>Match</span></div>
+        <div class="nav-buttons" id="navButtons">
+            <button class="btn btn-primary" onclick="showAuth()">Login</button>
+        </div>
+    </header>
+
+    <!-- Auth Modal -->
+    <div class="auth-container" id="authContainer">
+        <div class="auth-box">
+            <h2>Welcome to SwipeMatch</h2>
+            <div class="auth-tabs">
+                <div class="auth-tab active" onclick="switchAuth('login')">Login</div>
+                <div class="auth-tab" onclick="switchAuth('register')">Register</div>
+            </div>
+            
+            <!-- Login Form -->
+            <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%">Login</button>
+            </form>
+
+            <!-- Register Form -->
+            <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="registerEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="registerPassword" required>
+                </div>
+                <div class="form-group">
+                    <label>I am a...</label>
+                    <select id="registerRole">
+                        <option value="influencer">Influencer</option>
+                        <option value="brand">Brand</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%">Register</button>
+            </form>
+            
+            <button class="btn btn-outline" style="width: 100%; margin-top: 1rem;" onclick="hideAuth()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Dashboard -->
+    <div class="container">
+        <!-- Influencer Dashboard -->
+        <div class="dashboard" id="influencerDashboard">
+            <div class="dashboard-header">
+                <h1>Welcome back, <span id="influencerName">Influencer</span>! 👋</h1>
+                <p>Swipe right to accept campaigns and earn money!</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Earnings</h3>
+                    <div class="value">$<span id="totalEarnings">0.00</span></div>
+                </div>
+                <div class="stat-card">
+                    <h3>Campaigns Accepted</h3>
+                    <div class="value"><span id="campaignsAccepted">0</span></div>
+                </div>
+                <div class="stat-card">
+                    <h3>Pending Payout</h3>
+                    <div class="value">$<span id="pendingPayout">0.00</span></div>
+                </div>
+            </div>
+
+            <!-- Verification Section -->
+            <div class="verification-section">
+                <div class="verification-status">
+                    <h3>Account Verification</h3>
+                    <span class="status-badge" id="verificationBadge">Pending</span>
+                </div>
+                <p style="margin-bottom: 1rem;">Connect your social media to verify you have 300+ followers and can participate in campaigns.</p>
+                <div class="platform-buttons">
+                    <button class="btn btn-secondary" onclick="verifyAccount('instagram')">Verify Instagram</button>
+                    <button class="btn btn-secondary" onclick="verifyAccount('tiktok')">Verify TikTok</button>
+                    <button class="btn btn-secondary" onclick="verifyAccount('youtube')">Verify YouTube</button>
+                </div>
+            </div>
+
+            <!-- Swipe Section -->
+            <div class="swipe-container" id="swipeContainer">
+                <div class="swipe-card" id="swipeCard">
+                    <div class="card-header">
+                        <div class="brand-avatar" id="brandAvatar">B</div>
+                    </div>
+                    <div class="card-body">
+                        <h3 id="campaignName">Campaign Name</h3>
+                        <p class="brand-name" id="brandName">Brand Name</p>
+                        <p class="description" id="campaignDescription">Campaign description goes here...</p>
+                        <div class="coupon-info">
+                            <small>When you accept, you'll get a unique coupon code to share!</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="swipe-actions">
+                    <button class="swipe-btn swipe-left" onclick="swipeLeft()">✕</button>
+                    <button class="swipe-btn swipe-right" onclick="swipeRight()">♥</button>
+                </div>
+            </div>
+
+            <!-- My Matches -->
+            <h2 style="margin: 2rem 0 1rem 0;">My Campaigns</h2>
+            <div class="matches-grid" id="matchesGrid">
+                <!-- Matches will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Brand Dashboard -->
+        <div class="dashboard" id="brandDashboard">
+            <div class="dashboard-header">
+                <h1>Brand Dashboard 🏢</h1>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Active Campaigns</h3>
+                    <div class="value"><span id="brandCampaigns">0</span></div>
+                </div>
+                <div class="stat-card">
+                    <h3>Coupons Distributed</h3>
+                    <div class="value"><span id="brandCoupons">0</span></div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Revenue</h3>
+                    <div class="value">$<span id="brandRevenue">0.00</span></div>
+                </div>
+            </div>
+
+            <!-- Create Campaign -->
+            <div class="campaign-form">
+                <h3>Create New Campaign</h3>
+                <form onsubmit="createCampaign(event)">
+                    <div class="form-group">
+                        <label>Campaign Name</label>
+                        <input type="text" id="campaignNameInput" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <input type="text" id="campaignDescInput" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Coupons</label>
+                        <input type="number" id="campaignCouponsInput" value="100" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Uses Per Coupon</label>
+                        <input type="number" id="campaignUsesInput" value="50" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Coupon Codes (one per line)</label>
+                        <textarea class="coupon-input" id="couponCodesInput" placeholder="Enter 100 unique coupon codes, one per line..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create Campaign</button>
+                </form>
+            </div>
+
+            <!-- Campaign List -->
+            <h2 style="margin: 2rem 0 1rem 0;">Your Campaigns</h2>
+            <div class="campaign-list" id="campaignList">
+                <!-- Campaigns will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let currentUser = null;
+        let token = localStorage.getItem('token');
+        let currentCampaign = null;
+        let isVerified = false;
+
+        // API Base URL
+        const API_URL = 'http://localhost:8000';
+
+        // Check auth on load
+        if (token) {
+            checkAuth();
+        }
+
+        async function checkAuth() {
+            try {
+                const response = await fetch(`${API_URL}/api/auth/me`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (response.ok) {
+                    currentUser = await response.json();
+                    showDashboard();
+                } else {
+                    localStorage.removeItem('token');
+                    token = null;
+                }
+            } catch (e) {
+                console.error('Auth check failed:', e);
+            }
+        }
+
+        function showAuth() {
+            document.getElementById('authContainer').classList.add('active');
+        }
+
+        function hideAuth() {
+            document.getElementById('authContainer').classList.remove('active');
+        }
+
+        function switchAuth(tab) {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            
+            if (tab === 'login') {
+                document.querySelector('.auth-tab:first-child').classList.add('active');
+                document.getElementById('loginForm').classList.add('active');
+            } else {
+                document.querySelector('.auth-tab:last-child').classList.add('active');
+                document.getElementById('registerForm').classList.add('active');
+            }
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            try {
+                const formData = new FormData();
+                formData.append('username', email);
+                formData.append('password', password);
+
+                const response = await fetch(`${API_URL}/api/auth/login`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    token = data.access_token;
+                    localStorage.setItem('token', token);
+                    hideAuth();
+                    await checkAuth();
+                    showToast('Login successful!', 'success');
+                } else {
+                    const data = await response.json();
+                    showToast(data.detail || 'Login failed', 'error');
+                }
+            } catch (e) {
+                showToast('Login failed: ' + e.message, 'error');
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const role = document.getElementById('registerRole').value;
+
+            try {
+                const response = await fetch(`${API_URL}/api/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, role })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    token = data.access_token;
+                    localStorage.setItem('token', token);
+                    hideAuth();
+                    await checkAuth();
+                    showToast('Registration successful!', 'success');
+                } else {
+                    const data = await response.json();
+                    showToast(data.detail || 'Registration failed', 'error');
+                }
+            } catch (e) {
+                showToast('Registration failed: ' + e.message, 'error');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            token = null;
+            currentUser = null;
+            document.getElementById('influencerDashboard').classList.remove('active');
+            document.getElementById('brandDashboard').classList.remove('active');
+            document.getElementById('navButtons').innerHTML = '<button class="btn btn-primary" onclick="showAuth()">Login</button>';
+            showToast('Logged out successfully', 'success');
+        }
+
+        function showDashboard() {
+            document.getElementById('navButtons').innerHTML = `
+                <span style="align-self: center; margin-right: 1rem;">${currentUser.email}</span>
+                <button class="btn btn-outline" onclick="logout()">Logout</button>
+            `;
+
+            if (currentUser.role === 'influencer') {
+                document.getElementById('influencerDashboard').classList.add('active');
+                loadInfluencerData();
+            } else {
+                document.getElementById('brandDashboard').classList.add('active');
+                loadBrandData();
+            }
+        }
+
+        // Influencer Functions
+        async function loadInfluencerData() {
+            try {
+                // Get profile
+                const profileRes = await fetch(`${API_URL}/api/influencer/profile`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (profileRes.ok) {
+                    const profile = await profileRes.json();
+                    isVerified = profile.verification_status === 'verified';
+                    updateVerificationBadge(profile.verification_status);
+                    
+                    // Update stats
+                    document.getElementById('totalEarnings').textContent = profile.earnings_balance.toFixed(2);
+                    document.getElementById('pendingPayout').textContent = profile.pending_payout.toFixed(2);
+                }
+
+                // Get earnings
+                const earningsRes = await fetch(`${API_URL}/api/influencer/earnings`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (earningsRes.ok) {
+                    const earnings = await earningsRes.json();
+                    document.getElementById('campaignsAccepted').textContent = earnings.purchase_count || 0;
+                }
+
+                // Get matches
+                const matchesRes = await fetch(`${API_URL}/api/influencer/matches`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (matchesRes.ok) {
+                    const matches = await matchesRes.json();
+                    displayMatches(matches);
+                }
+
+                // Get next campaign
+                loadNextCampaign();
+
+            } catch (e) {
+                console.error('Load influencer data error:', e);
+            }
+        }
+
+        function updateVerificationBadge(status) {
+            const badge = document.getElementById('verificationBadge');
+            badge.className = 'status-badge';
+            
+            if (status === 'verified') {
+                badge.classList.add('status-verified');
+                badge.textContent = 'Verified';
+                document.getElementById('swipeContainer').classList.add('active');
+            } else if (status === 'rejected') {
+                badge.classList.add('status-rejected');
+                badge.textContent = 'Rejected';
+                document.getElementById('swipeContainer').classList.remove('active');
+            } else {
+                badge.classList.add('status-pending');
+                badge.textContent = 'Pending';
+                document.getElementById('swipeContainer').classList.remove('active');
+            }
+        }
+
+        async function verifyAccount(platform) {
+            const username = prompt(`Enter your ${platform} username:`);
+            if (!username) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/influencer/verify`, {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ platform, username })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    updateVerificationBadge(data.status);
+                    showToast(`Verification ${data.status}: ${data.follower_count} followers found!`, data.status === 'verified' ? 'success' : 'error');
+                    
+                    if (data.status === 'verified') {
+                        loadNextCampaign();
+                    }
+                } else {
+                    showToast(data.detail || 'Verification failed', 'error');
+                }
+            } catch (e) {
+                showToast('Verification error: ' + e.message, 'error');
+            }
+        }
+
+        async function loadNextCampaign() {
+            if (!isVerified) return;
+
+            try {
+                const response = await fetch(`${API_URL}/api/swipe/next-campaign`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    currentCampaign = await response.json();
+                    displayCampaign(currentCampaign);
+                    document.getElementById('swipeContainer').classList.add('active');
+                } else {
+                    const data = await response.json();
+                    if (data.detail && data.detail.includes('No more')) {
+                        document.getElementById('swipeContainer').classList.remove('active');
+                        showToast('No more campaigns available!', 'error');
+                    } else if (data.detail && data.detail.includes('verify')) {
+                        showToast('Please verify your account first', 'error');
+                    } else {
+                        showToast(data.detail || 'No campaigns available', 'error');
+                    }
+                }
+            } catch (e) {
+                console.error('Load campaign error:', e);
+            }
+        }
+
+        function displayCampaign(campaign) {
+            document.getElementById('brandAvatar').textContent = campaign.brand_name.charAt(0);
+            document.getElementById('campaignName').textContent = campaign.name;
+            document.getElementById('brandName').textContent = campaign.brand_name;
+            document.getElementById('campaignDescription').textContent = campaign.description || 'Promote this brand and earn commission!';
+        }
+
+        async function swipeLeft() {
+            if (!currentCampaign) return;
+            
+            const card = document.getElementById('swipeCard');
+            card.classList.add('swiping-left');
+            
+            setTimeout(async () => {
+                card.classList.remove('swiping-left');
+                await loadNextCampaign();
+            }, 500);
+        }
+
+        async function swipeRight() {
+            if (!currentCampaign) return;
+            
+            const card = document.getElementById('swipeCard');
+            card.classList.add('swiping-right');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/swipe/swipe-right?campaign_id=${currentCampaign.campaign_id}`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showToast(`Campaign accepted! Code: ${data.coupon_code}`, 'success');
+                    await loadInfluencerData();
+                } else {
+                    showToast(data.detail || 'Failed to accept campaign', 'error');
+                }
+            } catch (e) {
+                showToast('Error: ' + e.message, 'error');
+            }
+            
+            setTimeout(() => {
+                card.classList.remove('swiping-right');
+                loadNextCampaign();
+            }, 500);
+        }
+
+        function displayMatches(matches) {
+            const grid = document.getElementById('matchesGrid');
+            
+            if (matches.length === 0) {
+                grid.innerHTML = '<p style="color: var(--gray);">No campaigns yet. Start swiping!</p>';
+                return;
+            }
+            
+            grid.innerHTML = matches.map(match => `
+                <div class="match-card">
+                    <h4>${match.campaign_name}</h4>
+                    <div class="coupon-code">${match.coupon_code}</div>
+                    <p>Uses remaining: ${match.uses_remaining}</p>
+                    <div class="promote-link">
+                        <strong>Share link:</strong><br>
+                        https://vendor.com?ref=${match.coupon_code}
+                    </div>
+                    <button class="btn btn-secondary" style="margin-top: 1rem; width: 100%;" onclick="copyLink('${match.coupon_code}')">Copy Link</button>
+                </div>
+            `).join('');
+        }
+
+        function copyLink(code) {
+            navigator.clipboard.writeText(`https://vendor.com?ref=${code}`);
+            showToast('Link copied to clipboard!', 'success');
+        }
+
+        // Brand Functions
+        async function loadBrandData() {
+            try {
+                // Get campaigns
+                const campaignsRes = await fetch(`${API_URL}/api/brand/campaigns`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (campaignsRes.ok) {
+                    const campaigns = await campaignsRes.json();
+                    displayCampaigns(campaigns);
+                    document.getElementById('brandCampaigns').textContent = campaigns.length;
+                    
+                    const totalCoupons = campaigns.reduce((sum, c) => sum + c.distributed_coupons, 0);
+                    document.getElementById('brandCoupons').textContent = totalCoupons;
+                }
+
+            } catch (e) {
+                console.error('Load brand data error:', e);
+            }
+        }
+
+        async function createCampaign(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('campaignNameInput').value;
+            const description = document.getElementById('campaignDescInput').value;
+            const totalCoupons = parseInt(document.getElementById('campaignCouponsInput').value);
+            const usesPerCoupon = parseInt(document.getElementById('campaignUsesInput').value);
+            const codesText = document.getElementById('couponCodesInput').value;
+            
+            const codes = codesText.split('\n').map(c => c.trim()).filter(c => c);
+            
+            if (codes.length < totalCoupons) {
+                showToast(`Please provide at least ${totalCoupons} coupon codes`, 'error');
+                return;
+            }
+
+            try {
+                // Create campaign
+                const response = await fetch(`${API_URL}/api/brand/campaign`, {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name,
+                        description,
+                        total_coupons: codes.length,
+                        uses_per_coupon: usesPerCoupon
+                    })
+                });
+
+                if (response.ok) {
+                    const campaign = await response.json();
+                    
+                    // Add coupons
+                    const couponRes = await fetch(`${API_URL}/api/brand/campaign/${campaign.id}/coupons`, {
+                        method: 'POST',
+                        headers: { 
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ codes })
+                    });
+                    
+                    showToast('Campaign created successfully!', 'success');
+                    loadBrandData();
+                    
+                    // Clear form
+                    document.getElementById('campaignNameInput').value = '';
+                    document.getElementById('campaignDescInput').value = '';
+                    document.getElementById('couponCodesInput').value = '';
+                } else {
+                    const data = await response.json();
+                    showToast(data.detail || 'Failed to create campaign', 'error');
+                }
+            } catch (e) {
+                showToast('Error: ' + e.message, 'error');
+            }
+        }
+
+        function displayCampaigns(campaigns) {
+            const list = document.getElementById('campaignList');
+            
+            if (campaigns.length === 0) {
+                list.innerHTML = '<p style="color: var(--gray);">No campaigns yet. Create one above!</p>';
+                return;
+            }
+            
+            list.innerHTML = campaigns.map(c => `
+                <div class="campaign-item">
+                    <h3>${c.name}</h3>
+                    <p>${c.description || ''}</p>
+                    <div class="campaign-stats">
+                        <div class="campaign-stat">
+                            <div class="num">${c.distributed_coupons}</div>
+                            <div class="label">Distributed</div>
+                        </div>
+                        <div class="campaign-stat">
+                            <div class="num">${c.total_coupons}</div>
+                            <div class="label">Total</div>
+                        </div>
+                        <div class="campaign-stat">
+                            <div class="num">${c.uses_per_coupon}</div>
+                            <div class="label">Uses Each</div>
+                        </div>
+                        <div class="campaign-stat">
+                            <div class="num">${c.status}</div>
+                            <div class="label">Status</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast toast-${type} show`;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

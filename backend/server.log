@@ -1,0 +1,22 @@
+INFO:     Started server process [2375]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:49586 - "POST /api/auth/login HTTP/1.1" 200 OK
+Token payload: {'sub': '1', 'exp': 1774521269}, user_id: 1
+INFO:     127.0.0.1:49596 - "POST /api/brand/profile HTTP/1.1" 200 OK
+Token payload: {'sub': '1', 'exp': 1774521269}, user_id: 1
+INFO:     127.0.0.1:44690 - "POST /api/brand/campaign HTTP/1.1" 200 OK
+Token payload: {'sub': '1', 'exp': 1774521269}, user_id: 1
+INFO:     127.0.0.1:53082 - "POST /api/brand/campaign/1/coupons HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60412 - "POST /api/auth/register HTTP/1.1" 200 OK
+Token payload: {'sub': '2', 'exp': 1774521300}, user_id: 2
+INFO:     127.0.0.1:60418 - "POST /api/influencer/verify HTTP/1.1" 200 OK
+Token payload: {'sub': '2', 'exp': 1774521300}, user_id: 2
+INFO:     127.0.0.1:59254 - "GET /api/swipe/next-campaign HTTP/1.1" 200 OK
+Token payload: {'sub': '2', 'exp': 1774521300}, user_id: 2
+INFO:     127.0.0.1:48312 - "POST /api/swipe/swipe-right?campaign_id=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48324 - "POST /api/purchases/track HTTP/1.1" 200 OK
+Token payload: {'sub': '2', 'exp': 1774521300}, user_id: 2
+INFO:     127.0.0.1:33962 - "GET /api/influencer/earnings HTTP/1.1" 200 OK
+INFO:     127.0.0.1:38934 - "GET / HTTP/1.1" 200 OK
